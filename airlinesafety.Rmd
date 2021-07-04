@@ -1,0 +1,102 @@
+---
+title: "Airline-safety"
+author: "Arun Kangeyan"
+date: "6/28/2021"
+output: word_document
+---
+## Section 1: Description of the data
+
+The dataset that I am using is linked here (https://github.com/fivethirtyeight/data/blob/master/airline-safety/airline-safety.csv), titled *“Airline Safety”*,
+which contains information of safety records for major commercial airlines over the past 30 years, as based on the Aviation Safety Network's database. The data of the 30-year period is broke down into two halves: first from 1985 to 1999, and then from 2000 to 2014. To check weather there is a correlation in crash rates from one half of the data set to the other. If correlation is identified, that will imply that crash risk is persistent — predictable to some extent based on the airline.
+
+The author Nate Silver extracted the data from Aviation Safety Network’s database.He collected the data for 56 airlines that were in the global top 100 as of December 2012 and which have operated continuously since Jan. 1, 1985. The data contains Information such as available seat kilometers flown every week, Total number of incidents, Total number of fatal accidents and Total number of fatalities.
+
+He defines crashes in three ways:
+First, based on the rate of incidents as listed in the database, whether or not they resulted in a fatality.
+Next, based on the rate of fatal accidents.
+Finally, by the rate of fatalities among passengers and crew on the airline.
+
+I find that file is stored in CSV format n text format, The data is separated as ",".
+
+To open this R markdown file, I first downloaded the Rmarkdown package using install.packages(“rmarkdown") and pulled it into my library using library(rmarkdown).
+
+## Section 2: Reading the data into R:
+
+In order to read the file into R, 
+
+I copy pasted the raw text file link from GitHub and insert it into the R code using the function below and read the data into R as `airlinesafety`
+class converts csv data to data frame
+head displays first 6 values.
+I use True to identity the first row/column is identifier.
+```{r}
+airlinesafety <- read.csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/airline-safety/airline-safety.csv",TRUE,",")
+class(airlinesafety)
+head(airlinesafety)
+```
+Next, I wanted to see whether all the data was imported into R so I printed the dataset of the first 10 rows below: 
+```{r}
+head(airlinesafety,10)
+```
+
+# Reading all the column names
+```{r}
+colnames(x = airlinesafety)
+```
+
+I can use the below code to rename the column name, I left the columns as it is, I felt its not necessary to rename.
+airlinesafety <- rename(.data = airlinesafety,
+                     Airline = airline,
+                     Avail_seat_km_per_week = avail_seat_km_per_week, 
+                     Incidents_85_99 = incidents_85_99, 
+                     Fatal_accidents_85_99 = fatal_accidents_85_99,
+                     Fatalities_85_99 = fatalities_85_99,
+                     Incidents_00_14 = incidents_00_14,
+                     Fatal_accidents_00_14 = fatal_accidents_00_14,
+                     Fatalities_00_14 = fatalities_00_14)
+head(x = airlinesafety, 3)
+
+Next I wanted to filter certain rows.
+```{r}
+filter(airlinesafety, fatalities_00_14 > 100)
+```
+
+##Section 3: Characteristics of the data:
+1. I first viewed the different columns in the dataset using the `colnames` function. There are 8 columns: airline, avail_seat_km_per_week, incidents_85_99, fatal_accidents_85_99, fatalities_85_99, incidents_00_14, fatal_accidents_00_14, fatalities_00_14.
+
+```{r}
+colnames(airlinesafety)
+```
+
+```{r}
+library(knitr)
+kable(airlinesafety[1:8])
+```
+I wanted to build a table with the names of columns, and a short description of what each of the columns represent. Below, I used the code, and it imported as a dataset in my environment.
+
+```{r}
+text_tbl <- data.frame(
+  Names = c("airline", "avail_seat_km_per_week", "incidents_85_99", "fatal_accidents_85_99", "fatalities_85_99", "incidents_00_14", "fatal_accidents_00_14", "fatalities_00_14"),
+  Description = c(
+    "Airline (asterisk indicates that regional subsidiaries are included)",
+    "Available seat kilometers flown every week", 
+    "Total number of incidents, 1985–1999",
+    "Total number of fatal accidents, 1985–1999",
+    "Total number of fatalities, 1985–1999",
+     "Total number of incidents, 2000–2014",
+    "Total number of fatal accidents, 2000–2014",
+    "Total number of fatalities, 2000–2014")
+)
+text_tbl
+```
+## Section 4: Summary statistics
+To check missing values i used the colsums function
+```{r}
+colSums(is.na(airlinesafety))
+```
+
+Below is used to check the descriptive statistics.
+```{r}
+library(knitr)
+kable(summary(airlinesafety), caption="The descriptive summary statistics of each column in the airline safety dataset")
+```
+
